@@ -1,5 +1,7 @@
 package org.launchcode.cheesemvc.controllers;
 
+import org.launchcode.cheesemvc.models.Cheese;
+import org.launchcode.cheesemvc.util.Util;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,7 +17,7 @@ import java.util.ArrayList;
 @RequestMapping(value = "cheese")
 public class CheeseController {
 
-    static ArrayList<String> cheeses = new ArrayList<>();
+    static ArrayList<Cheese> cheeses = new ArrayList<>();
 
     @RequestMapping(value = "")
     public String index(Model model) {
@@ -31,10 +33,34 @@ public class CheeseController {
     }
 
     @RequestMapping(value = "add", method = RequestMethod.POST)
-    public String processAddCheeseForm(@RequestParam String cheeseName) {
-        cheeses.add(cheeseName);
+    public String processAddCheeseForm(@RequestParam String cheeseName, @RequestParam String
+                                       cheeseDescription) {
+        // validate input
+        if (cheeseName.isEmpty() || Util.containsDigits(cheeseName)) {
+            return "redirect:/cheese/add";
+        }
+
+        // add the cheese to the ArrayList
+        Cheese newCheese = new Cheese(cheeseName, cheeseDescription);
+        cheeses.add(newCheese);
 
         // redirect to /cheese
         return "redirect:";
     }
+
+    @RequestMapping(value = "remove", method = RequestMethod.GET)
+    public String displayRemoveCheeseForm(Model model) {
+        model.addAttribute("title", "Remove Cheese");
+        model.addAttribute("cheeses", cheeses);
+        return "cheese/remove";
+    }
+
+    @RequestMapping(value = "remove", method = RequestMethod.POST)
+    public String processRemoveCheeseForm(@RequestParam String cheeseName) {
+        cheeses.remove(cheeseName);
+
+        // redirect to /cheese
+        return "redirect:";
+    }
+
 }
