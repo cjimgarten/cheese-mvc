@@ -1,7 +1,6 @@
 package org.launchcode.cheesemvc.controllers;
 
 import org.launchcode.cheesemvc.models.Cheese;
-import org.launchcode.cheesemvc.util.Util;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -33,13 +32,8 @@ public class CheeseController {
     }
 
     @RequestMapping(value = "add", method = RequestMethod.POST)
-    public String processAddCheeseForm(@RequestParam String cheeseName, @RequestParam String
-                                       cheeseDescription) {
-        // validate input
-        if (cheeseName.isEmpty() || Util.containsDigits(cheeseName)) {
-            return "redirect:/cheese/add";
-        }
-
+    public String processAddCheeseForm(@RequestParam String cheeseName,
+                                       @RequestParam String cheeseDescription) {
         // add the cheese to the ArrayList
         Cheese newCheese = new Cheese(cheeseName, cheeseDescription);
         cheeses.add(newCheese);
@@ -52,7 +46,7 @@ public class CheeseController {
     public String displayRemoveCheeseForm(Model model) {
         model.addAttribute("title", "Remove Cheese");
         model.addAttribute("cheeses", cheeses);
-        return "cheese/remove";
+        return "/cheese/remove";
     }
 
     @RequestMapping(value = "remove", method = RequestMethod.POST)
